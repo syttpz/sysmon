@@ -7,7 +7,7 @@ use serde::Serialize;
 use std::sync::Mutex;
 use once_cell::sync::Lazy;
 
- //静态数据，初次运行获取
+ //静态数据，
     //基础数据
     /*
         System::cpu_arc() //系统架构
@@ -24,7 +24,6 @@ use once_cell::sync::Lazy;
             Heterogeneous MultiCore
             Symmetric MultiCore
     */
- 
 
 
 #[derive(Serialize)]

@@ -1,5 +1,4 @@
-// src/pages/Disk.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { HardDrive } from "lucide-react";
 import { formatBytes } from "../utils/util";
@@ -7,25 +6,24 @@ import { formatBytes } from "../utils/util";
 type DiskEntry = {
   mount_point: string;
   file_system: string;
-  total_space: number;     
-  available_space: number; 
+  total_space: number;
+  available_space: number;
 };
+
+const clamp = (n: number) => Math.max(0, Math.min(100, n));
 
 export default function Disk() {
   const [disks, setDisks] = useState<DiskEntry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     let alive = true;
-
     const fetchDisk = async () => {
       try {
         const res = await invoke<DiskEntry[]>("get_disk_info");
         if (!alive) return;
         setDisks(res);
         setError(null);
-        setLastUpdated(new Date());
       } catch (e: any) {
         if (!alive) return;
         setError(e?.message ?? "Failed to fetch disk info");
@@ -33,81 +31,58 @@ export default function Disk() {
     };
 
     fetchDisk();
-    const t = setInterval(fetchDisk, 8000); 
+    const t = setInterval(fetchDisk, 8000);
     return () => { alive = false; clearInterval(t); };
   }, []);
 
-
-  const rows = useMemo(() => {
-    if (!disks) return [];
-    return disks
-    .map((d) => {
-      const used = Math.max(0, (d.total_space ?? 0) - (d.available_space ?? 0));
-      const usedPct = d.total_space ? (used / d.total_space) * 100 : 0;
-      return { ...d, used, usedPct };
-    
-    });
-  }, [disks]);
+  const rows = (disks ?? []).map((d) => {
+    const total = d.total_space || 0;
+    const used = Math.max(0, total - (d.available_space || 0));
+    const usedPct = total ? (used / total) * 100 : 0;
+    return { ...d, used, usedPct };
+  });
 
   return (
     <div className="min-h-screen text-slate-100">
       <div className="mx-auto max-w-3xl p-4">
-        {/* Header */}
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <HardDrive className="w-7 h-7 text-slate-400" /> Disks
+          <HardDrive className="h-6 w-6" /> Disks
         </h1>
-        <div className="flex items-center">
-          <div className="text-sm text-slate-400">
-            {rows.length} disk{rows.length === 1 ? "" : "s"}
-          </div>
-          <div className="ml-auto text-xs text-slate-400">
-            {lastUpdated && <span>Last updated: {lastUpdated.toLocaleString()}</span>}
-          </div>
-        </div>
 
-        {!disks && !error && <div className="mt-6 text-sm">Loading…</div>}
-        {error && <div className="mt-6 text-sm text-red-300">{error}</div>}
+        {!disks && !error && <p className="mt-4 text-sm text-slate-400">Loading…</p>}
+        {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
         {disks && rows.length === 0 && !error && (
-          <div className="mt-6 text-sm text-slate-400">No disks found.</div>
+          <p className="mt-4 text-sm text-slate-400">No disks found.</p>
         )}
 
         {rows.length > 0 && !error && (
           <div className="mt-6 space-y-6">
+            
             {rows.map((d, idx) => (
-              <div key={`${d.mount_point}-${d.file_system}-${idx}`} className="rounded border border-slate-800 overflow-hidden">
+              <section key={`${d.mount_point}-${d.file_system}-${idx}`}>
                 <table className="w-full text-sm">
-                  <tbody>
-                    <tr className="border-b border-slate-800">
-                      <th className="w-40 p-2 text-left text-slate-400">Mount Point</th>
-                      <td className="p-2">{d.mount_point}</td>
-                    </tr>
-                    <tr className="border-b border-slate-800">
-                      <th className="w-40 p-2 text-left text-slate-400">File System</th>
-                      <td className="p-2">{d.file_system}</td>
-                    </tr>
-                    <tr className="border-b border-slate-800">
-                      <th className="w-40 p-2 text-left text-slate-400">Capacity</th>
-                      <td className="p-2">{formatBytes(d.total_space)}</td>
-                    </tr>
+                  <tbody className="[&>tr>th]:text-slate-400 [&>tr>th]:font-normal [&>tr>th]:text-left [&>tr>th]:pr-4 [&>tr>*]:py-1 [&>tr>td]:font-mono">
+                    <tr><th className="w-40">Mount Point</th><td>{d.mount_point || "-"}</td></tr>
+                    <tr><th>File System</th><td>{d.file_system || "-"}</td></tr>
+                    <tr><th>Capacity</th><td>{formatBytes(d.total_space)}</td></tr>
+                    
                     <tr>
-                      <th className="w-40 p-2 text-left text-slate-400">Used / Total</th>
-                      <td className="p-2">
-                        <div className="text-sm">
-                          {formatBytes(d.used)} / {formatBytes(d.total_space)}
-                          <span className="text-slate-400"> ({d.usedPct.toFixed(1)}% used)</span>
-                        </div>
-                        <div className="mt-2 h-2 w-full rounded bg-slate-800 overflow-hidden">
+                      <th>Used / Total</th>
+                      <td>
+                        {formatBytes(d.used)} / {formatBytes(d.total_space)}
+                        <div className="h-2 w-full overflow-hidden mb-1 mt-2">
                           <div
-                            className="h-full bg-slate-200"
-                            style={{ width: `${Math.max(0, Math.min(100, d.usedPct))}%` }}
+                            className="h-full bg-gray-300"
+                            style={{ width: `${clamp(d.usedPct)}%` }}
                             aria-label={`Disk ${idx} usage`}
                           />
                         </div>
                       </td>
                     </tr>
+
                   </tbody>
                 </table>
-              </div>
+              </section>
             ))}
           </div>
         )}

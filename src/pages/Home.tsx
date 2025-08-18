@@ -53,7 +53,7 @@ export default function Home() {
     <div className="min-h-screen text-slate-100">
       <div className="mx-auto max-w-3xl p-4">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <MonitorCog className="w-7 h-7 text-slate-400"/> Overview
+          <MonitorCog className="w-7 h-7"/> Overview
         </h1>
 
         <div className="flex items-center">
@@ -66,39 +66,30 @@ export default function Home() {
         {error && <div className="mt-6 text-sm text-red-300">Failed to fetch data: {error}</div>}
 
         {data && !loading && !error && (
-          <div className="mt-6 space-y-6">
-            <table className="w-full text-sm border border-slate-800 rounded overflow-hidden">
-              <tbody>
-                <tr className="border-b border-slate-800"><th className="w-40 p-2 text-left text-slate-400">Device Name</th><td className="p-2">{data.name ?? "-"}</td></tr>
-                <tr className="border-b border-slate-800"><th className="w-40 p-2 text-left text-slate-400">Host Name</th><td className="p-2">{data.host_name ?? "-"}</td></tr>
-                <tr className="border-b border-slate-800"><th className="w-40 p-2 text-left text-slate-400">OS Version</th><td className="p-2">{data.long_os_version ?? "-"}</td></tr>
-                <tr className="border-b border-slate-800"><th className="w-40 p-2 text-left text-slate-400">Kernel</th><td className="p-2">{data.kernel_version}</td></tr>
-                <tr className="border-b border-slate-800"><th className="w-40 p-2 text-left text-slate-400">Architecture</th><td className="p-2">{data.arch}</td></tr>
-                <tr className="border-b border-slate-800">
-                  <th className="w-40 p-2 text-left text-slate-400">Serial number</th>
-                  <td className="p-2">
-                    <div className="relative group">
-                      <span className="invisible group-hover:visible">{data.serial_num}</span>
-                    </div>
-                  </td>
-                </tr>
-                <tr className="border-b border-slate-800"><th className="w-40 p-2 text-left text-slate-400">Vendor</th><td className="p-2">{data.vendor}</td></tr>
-                <tr><th className="w-40 p-2 text-left text-slate-400">CPU</th><td className="p-2">{data.cpu_brand}</td></tr>
+          <section className="mt-6">
+
+            <table className="w-full text-sm">
+              <tbody className="[&>tr>th]:text-slate-400 [&>tr>th]:font-normal [&>tr>th]:text-left [&>tr>th]:pr-4 [&>tr>*]:py-1 [&>tr>td]:font-mono">
+                {([
+                  ["Device Name", data.name ?? "-"],
+                  ["CPU", data.cpu_brand],
+                  ["Host Name", data.host_name ?? "-"],
+                  ["OS Version", data.long_os_version ?? "-"],
+                  ["Kernel", data.kernel_version],
+                  ["Architecture", data.arch],
+                  ["Serial Number", data.serial_num ?? "-"],
+                  ["Memory", formatBytes(data.total_memory)],
+                  ["Storage", formatBytes(totalDisk)],
+                  ["Vendor", data.vendor ?? "-"],
+                ] as [string, React.ReactNode][]).map(([label, value]) => (
+                  <tr key={label}>
+                    <th className="w-40">{label}</th>
+                    <td>{value}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-
-            <div className="flex flex-row space-x-20">
-              <div>
-                <h2 className="text-sm font-medium mb-2">Memory</h2>
-                <div className="text-sm">Total: {formatBytes(data.total_memory)}</div>
-              </div>
-
-              <div>
-                <h2 className="text-sm font-medium mb-2">Storage</h2>
-                <div className="text-sm mb-2">Total capacity: {formatBytes(totalDisk)}</div>
-              </div>
-            </div>
-          </div>
+          </section>
         )}
       </div>
     </div>
