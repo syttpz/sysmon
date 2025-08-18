@@ -1,17 +1,20 @@
 import { Routes, Route, Navigate } from "react-router-dom"
-import Sidebar from "./components/Sidebar"
+import Layout from "./components/Layout"
 import Home from "./pages/Home"
-//import Cpu from "./pages/Cpu"
-//import Memory from "./pages/Memory"
-//import Disk from "./pages/Disk"
+import Cpu from "./pages/Cpu"
+import Disk from "./pages/Disk"
+import Network from "./pages/Network"
 
 function App() {
   return (
     <div className="flex h-screen">
-      <Sidebar />
-      <main className="flex-1 p-6 bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white overflow-auto">
+      <Layout />
+      <main className="flex-1 p-6 bg-zinc-100 dark:bg-slate-950 text-black dark:text-white overflow-auto ">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/cpu" element={<Cpu />} />
+          <Route path="/disk" element={<Disk />} />
+          <Route path="/network" element={<Network />} />
         </Routes>
       </main>
     </div>
