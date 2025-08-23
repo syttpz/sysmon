@@ -1,11 +1,25 @@
-<<<<<<< HEAD
-# sysmon
-=======
-# Tauri + React + Typescript
+# SysMon.exe
+![icon](./src-tauri/icon.png)
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+A lightweight Windows system monitor that displays device info, real-time CPU & memory, per-core usage, disk usage & I/O, and network info with private/public IPs.
 
-## Recommended IDE Setup
+## Preview
+![Screenshot](./public/screenshots/overview.png)
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
->>>>>>> 5673716 (first commit)
+## Installation
+Download the latest `.exe` from [Releases](./src-tauri/target/release/sysmon-ui.exe).  
+
+## Dev setup
+
+```bash
+git clone https://github.com/syttpz/sysmon.git
+cd sysmon
+npm install   
+npm run tauri dev 
+```
+
+## Build
+```bash
+cd src-tauri
+npm build
+```
