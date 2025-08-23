@@ -1,5 +1,5 @@
 # SysMon.exe
-![icon](./src-tauri/icon.png)
+![icon](./src-tauri/icons/32x32.png)
 
 A lightweight Windows system monitor that displays device info, real-time CPU & memory, per-core usage, disk usage & I/O, and network info with private/public IPs.
 
