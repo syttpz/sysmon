@@ -7,7 +7,7 @@ A lightweight Windows system monitor that displays device info, real-time CPU & 
 ![Screenshot](./public/screenshots/overview.png)
 
 ## Installation
-Download the latest `.exe` from [Releases](./src-tauri/target/release/sysmon-ui.exe).  
+Download the latest `.exe` from [Releases](https://github.com/syttpz/sysmon/releases).  
 
 ## Dev setup
 
