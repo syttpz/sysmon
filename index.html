@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' tauri: asset: blob: data:;
+  img-src 'self' https: data:;
+  style-src 'self' 'unsafe-inline';
+  script-src 'self';
+  connect-src 'self' https://ipapi.co https: http:;
+  frame-src 'none';
+">
+
     <title>Sysmon</title>
     <link href="/src/style.css" rel="stylesheet">
   </head>

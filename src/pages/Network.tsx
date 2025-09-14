@@ -38,7 +38,7 @@ export default function NetworkPage() {
     : "";
 
   return (
-    <div className="min-h-screen bg-black text-slate-100">
+    <div className="min-h-screen text-slate-100">
       <div className="mx-auto max-w-3xl p-4">
         <h1 className="flex items-center gap-2 text-2xl font-bold">
           <Network className="h-6 w-6" /> Network

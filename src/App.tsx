@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="flex h-screen">
       <Layout />
-      <main className="flex-1 p-6 bg-zinc-100 dark:bg-black text-black dark:text-white overflow-auto ">
+      <main className="flex-1 p-6 bg-black overflow-auto ">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cpu" element={<Cpu />} />
